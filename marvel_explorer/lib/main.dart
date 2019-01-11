@@ -37,11 +37,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String character = "Hulk";
   String apiKey = "544c4bd372b1cfe780b82adb9240affe";
+  List<String> characterNames;
+
   final characterNameController = new TextEditingController();
 
   _MyHomePageState() {}
   void _incrementCounter() {
-    setState(() {});
+    setState(() {
+      
+    });
   }
 
   @override
