@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 void main() => runApp(MyApp());
 
@@ -64,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Text(
                   'Enter a character name:',
-                  style: TextStyle(fontSize: 30),
+                  style: TextStyle(fontSize: 25),
                 ),
                 TextField(
                   controller: characterNameController,
