@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
+import 'CharacterList.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,9 +31,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String characterName = "Hulk";
-  List<String> characterNames;
+  List<String> characterNames = List();
 
   final characterNameController = new TextEditingController();
+  var characterList = CharacterList();
 
   _MyHomePageState() {}
   void _incrementCounter() {
@@ -47,25 +49,31 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Enter a character name:',
-                  style: TextStyle(fontSize: 25),
-                ),
-                TextField(
-                  controller: characterNameController,
-                  onEditingComplete: () {
-                    this.fetchCharacterInfo(this.characterNameController.text);
-                    print(this.characterNameController.text);
-                  },
-                ),
-              ]),
-        ),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Enter a character name:',
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    TextField(
+                      controller: characterNameController,
+                      onEditingComplete: () {
+                        this.fetchCharacterInfo(this.characterNameController.text);
+                        print(this.characterNameController.text);
+                      },
+                    ),
+                  ]),
+            ),
+          ),
+
+          Expanded(child: CharacterList(characters: characterNames))
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
@@ -86,8 +94,21 @@ class _MyHomePageState extends State<MyHomePage> {
     print(url);
     http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
         (response) {
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
+
+          this.setState(() {
+
+          print("Response body: ${response.body}");
+          Map<String, dynamic> responseMap = json.decode(response.body);
+          Map<String, dynamic> data = responseMap["data"];
+          List<dynamic> characters = data["results"];
+          print(characters);
+
+          for (Map<String, dynamic> character in characters) {
+          this.characterNames.add(character["name"]);
+          }
+          print(responseMap);
+          print(characterNames);
+          });
     });
   }
 

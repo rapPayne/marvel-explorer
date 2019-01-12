@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 class CharacterList extends StatelessWidget {
   CharacterList({this.characters});
-  final List<dynamic> characters;
+  List<dynamic> characters;
 
   @override
   Widget build(BuildContext context) {
     return Center(
         child: ListView.builder(
           itemBuilder: (context, i) {
-            return Text('${i+1}');
+            return Text(characters[i]);
           },
-          itemCount: 20,
+          itemCount: characters.length,
         )
     );
   }
