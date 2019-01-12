@@ -6,6 +6,20 @@ class CharacterDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child:Text("I'm Character Detail ${character['name']}"));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(character['name']),
+      ),
+    body: Center(
+      child: Column(children: <Widget>[
+        Text("I'm Character Detail ${character['name']}"),
+        MaterialButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Back"),
+          ),
+        Text("I'm Character Detail ${character['name']}"),
+      ]),
+    )
+    );
   }
 }
