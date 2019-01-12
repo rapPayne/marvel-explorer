@@ -30,23 +30,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String characterName = "Hulk";
+  String characterName;
   List<String> characterNames = List();
 
   final characterNameController = new TextEditingController();
-  //var characterList = CharacterList(characters: List(),);
 
-  _MyHomePageState() {}
-  void _incrementCounter() {
-    setState(() {});
-  }
+  _MyHomePageState();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Column(
@@ -63,20 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     TextField(
                       controller: characterNameController,
-                      onEditingComplete: () {
-                        this.fetchCharacterInfo(this.characterNameController.text);
-                        print(this.characterNameController.text);
-                      },
+                      onEditingComplete: () => this.fetchCharacterInfo(
+                          this.characterNameController.text),
                     ),
                   ]),
             ),
           ),
-
           Expanded(child: CharacterList(characters: characterNames))
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => fetchCharacterInfo(this.characterNameController.text),
         tooltip: 'Get a hero',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -88,34 +79,27 @@ class _MyHomePageState extends State<MyHomePage> {
     String publicKey = "544c4bd372b1cfe780b82adb9240affe";
     String privateKey = "0b775e66cd31a25f1d0a1953cb992e9f9f219380";
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
-    print(hash);
     String url =
-        'https://gateway.marvel.com/v1/public/characters?name=${characterName}&apikey=${publicKey}&hash=${hash}&ts=${timeStamp}';
-    print(url);
+        'https://gateway.marvel.com/v1/public/characters?nameStartsWith=${characterName}&apikey=${publicKey}&hash=${hash}&ts=${timeStamp}';
+    List<String> localCharacterNames = new List<String>();
+
     http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
         (response) {
+      Map<String, dynamic> responseMap = json.decode(response.body);
+      Map<String, dynamic> data = responseMap["data"];
+      List<dynamic> characters = data["results"];
+      print(characters);  // This is a list of full character objects
 
-          this.setState(() {
-
-          print("Response body: ${response.body}");
-          Map<String, dynamic> responseMap = json.decode(response.body);
-          Map<String, dynamic> data = responseMap["data"];
-          List<dynamic> characters = data["results"];
-          print(characters);
-
-          // clear previous results
-          this.characterNames.clear();
-
-          for (Map<String, dynamic> character in characters) {
-          this.characterNames.add(character["name"]);
-          }
-          print(responseMap);
-          print(characterNames);
-          });
+      for (Map<String, dynamic> character in characters) {
+        localCharacterNames.add(character["name"]);
+      }
+      this.setState(() {
+        characterNames = localCharacterNames;
+      });
     });
   }
 
-  ///Generate MD5 hash
+  // Generate MD5 hash
   generateMd5(String data) {
     var content = new Utf8Encoder().convert(data);
     var md5 = crypto.md5;
