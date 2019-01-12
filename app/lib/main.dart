@@ -103,6 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
           List<dynamic> characters = data["results"];
           print(characters);
 
+          // clear previous results
+          this.characterNames.clear();
+
           for (Map<String, dynamic> character in characters) {
           this.characterNames.add(character["name"]);
           }
