@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> characterNames = List();
 
   final characterNameController = new TextEditingController();
-  var characterList = CharacterList();
+  //var characterList = CharacterList(characters: List(),);
 
   _MyHomePageState() {}
   void _incrementCounter() {

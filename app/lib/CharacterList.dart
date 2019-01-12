@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 class CharacterList extends StatelessWidget {
   CharacterList({this.characters});
-  List<dynamic> characters;
+  final List<dynamic> characters;
 
   @override
   Widget build(BuildContext context) {
