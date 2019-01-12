@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "CharacterDetail.dart";
 
 class CharacterBrief extends StatelessWidget {
   final dynamic character;
@@ -13,13 +14,21 @@ class CharacterBrief extends StatelessWidget {
           '${character["thumbnail"]["path"]}/portrait_small.${character["thumbnail"]["extension"]}';
     }
 
-    return Card(
-      child: Row(
-        children: <Widget>[
-          Image.network(imageUrl),
-          Text(character["name"]),
-        ],
-      ),
-    );
+    return GestureDetector( // When user taps this, bring up the character details.
+        onTap: () {
+          Navigator.push(context, 
+            new MaterialPageRoute(
+              builder: (context) => CharacterDetail(character:this.character))
+          );
+        },
+        child: Card(
+          margin: EdgeInsets.all(5),
+          child: Row(
+            children: <Widget>[
+              Image.network(imageUrl),
+              Text(character["name"]),
+            ],
+          ),
+        ));
   }
 }
