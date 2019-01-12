@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart' as crypto;
 
 void main() => runApp(MyApp());
 
@@ -18,35 +21,22 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String character = "Hulk";
-  String apiKey = "544c4bd372b1cfe780b82adb9240affe";
+  String characterName = "Hulk";
   List<String> characterNames;
 
   final characterNameController = new TextEditingController();
 
   _MyHomePageState() {}
   void _incrementCounter() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -70,8 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 TextField(
                   controller: characterNameController,
                   onEditingComplete: () {
-                    this.fetchCharacterInfo(
-                        this.characterNameController.text, apiKey);
+                    this.fetchCharacterInfo(this.characterNameController.text);
                     print(this.characterNameController.text);
                   },
                 ),
@@ -86,9 +75,27 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void fetchCharacterInfo(characterName, apiKey) {
+  void fetchCharacterInfo(characterName) {
+    String timeStamp = "1";
+    String publicKey = "544c4bd372b1cfe780b82adb9240affe";
+    String privateKey = "0b775e66cd31a25f1d0a1953cb992e9f9f219380";
+    String hash = generateMd5('$timeStamp$privateKey$publicKey');
+    print(hash);
     String url =
-        'https://gateway.marvel.com/v1/public/characters?name=${characterName}&apikey=${apiKey}';
+        'https://gateway.marvel.com/v1/public/characters?name=${characterName}&apikey=${publicKey}&hash=${hash}&ts=${timeStamp}';
     print(url);
+    http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
+        (response) {
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+    });
+  }
+
+  ///Generate MD5 hash
+  generateMd5(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var md5 = crypto.md5;
+    var digest = md5.convert(content);
+    return hex.encode(digest.bytes);
   }
 }
