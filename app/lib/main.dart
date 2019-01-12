@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String characterName;
-  List<String> characterNames = List();
+  List<dynamic> characters = List();
 
   final characterNameController = new TextEditingController();
 
@@ -39,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ]),
             ),
           ),
-          Expanded(child: CharacterList(characters: characterNames))
+          Expanded(child: CharacterList(characters: this.characters))
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -81,20 +82,15 @@ class _MyHomePageState extends State<MyHomePage> {
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url =
         'https://gateway.marvel.com/v1/public/characters?nameStartsWith=${characterName}&apikey=${publicKey}&hash=${hash}&ts=${timeStamp}';
-    List<String> localCharacterNames = new List<String>();
 
     http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
         (response) {
       Map<String, dynamic> responseMap = json.decode(response.body);
       Map<String, dynamic> data = responseMap["data"];
       List<dynamic> characters = data["results"];
-      print(characters);  // This is a list of full character objects
 
-      for (Map<String, dynamic> character in characters) {
-        localCharacterNames.add(character["name"]);
-      }
       this.setState(() {
-        characterNames = localCharacterNames;
+        this.characters = characters;   
       });
     });
   }

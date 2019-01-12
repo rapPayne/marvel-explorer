@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'CharacterBrief.dart';
+
 class CharacterList extends StatelessWidget {
   CharacterList({this.characters});
   final List<dynamic> characters;
@@ -8,7 +10,8 @@ class CharacterList extends StatelessWidget {
     return Center(
         child: ListView.builder(
           itemBuilder: (context, i) {
-            return Text(characters[i]);
+            print("Character is ${characters[i]}");
+            return CharacterBrief(character: characters[i]);
           },
           itemCount: characters.length,
         )
