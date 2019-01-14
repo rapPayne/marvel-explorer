@@ -14,18 +14,10 @@ class ComicsList extends StatelessWidget {
       Text(
         "I'm comics list. Here we'll pass in a comicsResponse (?) and when this is loaded, we'll fetch the comics?"),
       Column(
-        children: getComicsBriefWidgets(comicsResponse["items"])
+        children: comicsResponse["items"].map<Widget>((comic) => new Text(comic["name"])).toList(),
       )
     ])
     );
   }
 
-  List<Widget> getComicsBriefWidgets(dynamic comicsList) {
-    List<Widget> comicsBriefs = new List<Widget>();
-    for (int i=0; i<comicsList.length; i++) {
-      dynamic comic = comicsList[i];
-      comicsBriefs.add(Text(comic["name"]));
-    }
-    return comicsBriefs;
-  }
 }
