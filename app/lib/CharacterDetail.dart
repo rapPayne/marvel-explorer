@@ -7,7 +7,9 @@ class CharacterDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    
+    Scaffold(
       appBar: AppBar(
         title: Text(character['name']),
       ),
@@ -71,10 +73,11 @@ class CharacterDetail extends StatelessWidget {
           ],
         ),
       ]),
+    );
       // Text(character['modified']),
       // Text(character['resourceURI']),
       // Text(character['urls']),
-    );
+    //);
   }
 
   goToComics(dynamic comics, BuildContext context) {

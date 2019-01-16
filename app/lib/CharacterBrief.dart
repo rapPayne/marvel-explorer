@@ -7,7 +7,6 @@ class CharacterBrief extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print("The char:" + this.character.toString());
     String imageUrl = "";
     if (character["thumbnail"] != null) {
       imageUrl =

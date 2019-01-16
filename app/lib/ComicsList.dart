@@ -45,7 +45,7 @@ class _ComicsListState extends State<ComicsList> {
   void initState() {
     super.initState();
 
-    //RAP: Refactor this: should be an async pure function
+    //TODO: RAP: Refactor this: should be an async pure function
     fetchComicsList();
   }
 
@@ -55,7 +55,9 @@ class _ComicsListState extends State<ComicsList> {
         appBar: AppBar(
           title: Text(_title),
         ),
-        body: Column(children: <Widget>[
+        body:
+        
+         Column(children: <Widget>[
           Text(
               "I'm the stateful comics list. Here we'll pass in a comicsResponse (?) and when this is loaded, we'll fetch the comics?"),
           Column(
@@ -65,10 +67,12 @@ class _ComicsListState extends State<ComicsList> {
           ),
           Text(
               "${_numberOfComicsAvailable - _numberOfComicsInThisBatch} more ...")
-        ]));
+        ]),
+        );
   }
 
   void fetchComicsList() async {
+    //TODO: Use real timestamps, not a fake hardcoded.
     String timeStamp = "1";
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
 
@@ -91,5 +95,6 @@ class _ComicsListState extends State<ComicsList> {
     }
   }
 
+//TODO: Rap - Write this to get each book.
   fetchComic() {}
 }
