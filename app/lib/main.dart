@@ -58,8 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     TextField(
                       controller: characterNameController,
-                      onEditingComplete: () => this.fetchCharacterInfo(
-                          this.characterNameController.text),
+                      onEditingComplete: (){
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        fetchCharacterInfo(characterNameController.text);
+                      },
                     ),
                   ]),
             ),
