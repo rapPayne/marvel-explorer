@@ -48,21 +48,21 @@ class CharacterDetail extends StatelessWidget {
                         alignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                       FlatButton(
-                        child: Text('Comics'),
+                        child: Text('COMICS'),
                         onPressed: character["comics"] == 0
                             ? null
                             : () => goToComics(character["comics"], context),
                       ),
                       FlatButton(
-                        child: Text('Series'),
+                        child: Text('SERIES'),
                         onPressed: () => print('foo'),
                       ),
                       FlatButton(
-                        child: Text('Stories'),
+                        child: Text('STORIES'),
                         onPressed: () => print('foo'),
                       ),
                       FlatButton(
-                        child: Text('Events'),
+                        child: Text('EVENTS'),
                         onPressed: () => print('foo'),
                       ),
                     ])),

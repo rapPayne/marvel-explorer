@@ -12,30 +12,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Marvel Comics Lookup',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Marvel Comics Lookup'),
+      home: MainPage(title: 'Marvel Comics Lookup'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MainPage extends StatefulWidget {
   final String title;
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MainPage({Key key, this.title}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   String characterName;
   List<dynamic> characters = List();
 
   final characterNameController = new TextEditingController();
 
-  _MyHomePageState();
+  _MainPageState();
 
   @override
   Widget build(BuildContext context) {
