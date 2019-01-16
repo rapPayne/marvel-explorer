@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'utilities.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'globalConstants.dart';
+import 'utilities.dart';
 
 class ComicsList extends StatefulWidget {
   final Map<String, dynamic> comicsResponse;
@@ -29,11 +30,6 @@ class _ComicsListState extends State<ComicsList> {
   List<dynamic> _comicsList = new List<dynamic>();
   String _title;
 
-  String timeStamp = "1";
-  String publicKey = "544c4bd372b1cfe780b82adb9240affe";
-  String privateKey = "0b775e66cd31a25f1d0a1953cb992e9f9f219380";
-  String hash;
-
   _ComicsListState({comicsResponse, reasonForList}) {
     _collectionURI = comicsResponse["collectionURI"];
     _numberOfComicsAvailable = comicsResponse["available"];
@@ -43,7 +39,6 @@ class _ComicsListState extends State<ComicsList> {
     _title =
         reasonForList?.isEmpty ?? true ? "Comics" : "Comics for $reasonForList";
     // Above bool expression means if "reasonForList is null or empty"
-    hash = generateMd5('$timeStamp$privateKey$publicKey');
   }
 
   @override
@@ -74,6 +69,9 @@ class _ComicsListState extends State<ComicsList> {
   }
 
   void fetchComicsList() async {
+    String timeStamp = "1";
+    String hash = generateMd5('$timeStamp$privateKey$publicKey');
+
     String url = '$_collectionURI?apikey=$publicKey&hash=$hash&ts=$timeStamp';
     try {
       final response = await http.get(
