@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String privateKey = "0b775e66cd31a25f1d0a1953cb992e9f9f219380";
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url =
-        'https://gateway.marvel.com/v1/public/characters?nameStartsWith=${characterName}&apikey=${publicKey}&hash=${hash}&ts=${timeStamp}';
+        'https://gateway.marvel.com/v1/public/characters?nameStartsWith=$characterName&apikey=$publicKey&hash=$hash&ts=$timeStamp';
 
     http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
         (response) {

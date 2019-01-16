@@ -10,7 +10,6 @@ class CharacterList extends StatelessWidget {
     return Center(
         child: ListView.builder(
           itemBuilder: (context, i) {
-            print("Character is ${characters[i]}");
             return CharacterBrief(character: characters[i]);
           },
           itemCount: characters.length,
