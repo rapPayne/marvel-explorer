@@ -54,7 +54,7 @@ class _CharacterQueryState extends State<CharacterQuery> {
   }
 
   void fetchCharacterInfo(characterName) {
-    String timeStamp = "1";
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url =
         'https://gateway.marvel.com/v1/public/characters?nameStartsWith=$characterName&apikey=$publicKey&hash=$hash&ts=$timeStamp';

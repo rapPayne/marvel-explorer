@@ -72,8 +72,7 @@ class _ComicsListState extends State<ComicsList> {
   }
 
   void fetchComicsList() async {
-    //TODO: Use real timestamps, not a fake hardcoded.
-    String timeStamp = "1";
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
 
     String url = '$_collectionURI?apikey=$publicKey&hash=$hash&ts=$timeStamp';
