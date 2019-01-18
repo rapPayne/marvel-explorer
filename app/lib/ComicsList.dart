@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'globalConstants.dart';
 import 'utilities.dart';
+import 'ComicBrief.dart';
 
 class ComicsList extends StatefulWidget {
   final Map<String, dynamic> comicsResponse;
@@ -56,19 +57,18 @@ class _ComicsListState extends State<ComicsList> {
       appBar: AppBar(
         title: Text(_title),
       ),
-      body: Column(children: <Widget>[
-        Column(
-          children: _comicsList
-              .map<Widget>((comic) => new Text(comic["title"]))
-              .toList(),
-        ),
-        RaisedButton(
-          onPressed: () => fetchMoreComics(5, _numberOfComicsDisplayed)
-              .then((firstComics) => addToComicsList(firstComics)),
-          child: Text(
-              "${_numberOfComicsAvailable - _numberOfComicsDisplayed} more ..."),
-        ),
-      ]),
+      body: GridView.extent(
+        maxCrossAxisExtent: 300.0,
+        children: _comicsList
+            .map<Widget>((comic) => new ComicBrief(comic: comic))
+            .toList(),
+      ),
+      floatingActionButton: RaisedButton(
+        onPressed: () => fetchMoreComics(5, _numberOfComicsDisplayed)
+            .then((firstComics) => addToComicsList(firstComics)),
+        child: Text(
+            "${_numberOfComicsAvailable - _numberOfComicsDisplayed} more ..."),
+      ),
     );
   }
 
