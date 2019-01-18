@@ -21,20 +21,20 @@ class ComicsList extends StatefulWidget {
 class _ComicsListState extends State<ComicsList> {
   // A comicsResponse looks like this:
   // available: Total number of comics
-  // collectionURI: url to get to all of them???
+  // collectionURI: url to get to all of them
   // items: The comics returned in this batch
   // returned: The number of comics returned in this batch
   String _collectionURI;
   int _numberOfComicsAvailable;
-  int _numberOfComicsInThisBatch;
+  int _numberOfComicsDisplayed;
   List<dynamic> _comicsList = new List<dynamic>();
   String _title;
 
   _ComicsListState({comicsResponse, reasonForList}) {
     _collectionURI = comicsResponse["collectionURI"];
     _numberOfComicsAvailable = comicsResponse["available"];
-    _numberOfComicsInThisBatch = comicsResponse[
-        "returned"]; // Should be redundant. Should be _comicsList.length.
+    // _numberOfComicsDisplayed = comicsResponse[
+    //     "returned"]; // Should be redundant. Should be _comicsList.length.
     //_comicsList = comicsResponse["items"];
     _title =
         reasonForList?.isEmpty ?? true ? "Comics" : "Comics for $reasonForList";
@@ -44,54 +44,66 @@ class _ComicsListState extends State<ComicsList> {
   @override
   void initState() {
     super.initState();
-
-    //TODO: RAP: Refactor this: should be an async pure function
-    fetchComicsList();
+    _numberOfComicsDisplayed = 0;
+    _comicsList.clear();
+    fetchMoreComics(5, _numberOfComicsDisplayed)
+        .then((firstComics) => addToComicsList(firstComics));
   }
 
   @override
   Widget build(context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(_title),
+      appBar: AppBar(
+        title: Text(_title),
+      ),
+      body: Column(children: <Widget>[
+        Column(
+          children: _comicsList
+              .map<Widget>((comic) => new Text(comic["title"]))
+              .toList(),
         ),
-        body:
-        
-         Column(children: <Widget>[
-          Text(
-              "I'm the stateful comics list. Here we'll pass in a comicsResponse (?) and when this is loaded, we'll fetch the comics?"),
-          Column(
-            children: _comicsList
-                .map<Widget>((comic) => new Text(comic["title"]))
-                .toList(),
-          ),
-          Text(
-              "${_numberOfComicsAvailable - _numberOfComicsInThisBatch} more ...")
-        ]),
-        );
+        RaisedButton(
+          onPressed: () => fetchMoreComics(5, _numberOfComicsDisplayed)
+              .then((firstComics) => addToComicsList(firstComics)),
+          child: Text(
+              "${_numberOfComicsAvailable - _numberOfComicsDisplayed} more ..."),
+        ),
+      ]),
+    );
   }
 
-  void fetchComicsList() async {
+  // Fetches X more comics, having skipped Y from the API.
+  Future<List<dynamic>> fetchMoreComics(
+      int numberToFetch, int numberToSkip) async {
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
+    List<dynamic> comicsList = new List<dynamic>();
 
-    String url = '$_collectionURI?apikey=$publicKey&hash=$hash&ts=$timeStamp';
+    if (numberToFetch > _numberOfComicsAvailable - _numberOfComicsDisplayed)
+      numberToFetch = _numberOfComicsAvailable - _numberOfComicsDisplayed;
+
+    String url =
+        '$_collectionURI?limit=$numberToFetch&offset=$numberToSkip&apikey=$publicKey&hash=$hash&ts=$timeStamp';
     try {
       final response = await http.get(
         Uri.encodeFull(url),
         headers: {"Accept": "application/json"},
       );
 
-      print(response);
       final responseMap = json.decode(response.body);
-      List<dynamic> comicsList = responseMap["data"]["results"];
-      if (mounted) {
-        //TODO: RAP -  Need to pull out the proper parts and display them here
-        setState(() => _comicsList = comicsList);
-      }
+      comicsList = (responseMap["data"]["results"] as List<dynamic>);
     } catch (e) {
       print("$e");
     }
+    return comicsList;
+  }
+
+  void addToComicsList(List<dynamic> newComics) {
+    if (mounted)
+      setState(() {
+        _numberOfComicsDisplayed += newComics.length;
+        _comicsList.addAll(newComics);
+      });
   }
 
 //TODO: Rap - Write this to get each book.
