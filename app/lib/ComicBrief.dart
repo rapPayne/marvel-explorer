@@ -11,9 +11,9 @@ class ComicBrief extends StatelessWidget {
     if (comic["thumbnail"] != null) {
       imageUrl =
           '${comic["thumbnail"]["path"]}/portrait_xlarge.${comic["thumbnail"]["extension"]}';
-          print("imageurl is $imageUrl");
+          //print("imageurl is $imageUrl");
     }
-    print(comic);
+    //print(comic);
     return Container(
       margin: EdgeInsets.all(5),
       child: 

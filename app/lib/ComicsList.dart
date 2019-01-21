@@ -30,6 +30,9 @@ class _ComicsListState extends State<ComicsList> {
   int _numberOfComicsDisplayed;
   List<dynamic> _comicsList = new List<dynamic>();
   String _title;
+  bool _fetching = false;
+  ScrollController _scrollController =
+      new ScrollController(); // For inifite scroll
 
   _ComicsListState({comicsResponse, reasonForList}) {
     _collectionURI = comicsResponse["collectionURI"];
@@ -47,8 +50,22 @@ class _ComicsListState extends State<ComicsList> {
     super.initState();
     _numberOfComicsDisplayed = 0;
     _comicsList.clear();
-    fetchMoreComics(5, _numberOfComicsDisplayed)
+    fetchMoreComics(20, _numberOfComicsDisplayed)
         .then((firstComics) => addToComicsList(firstComics));
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        fetchMoreComics(5, _numberOfComicsDisplayed)
+            .then((firstComics) => addToComicsList(firstComics));
+          }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -62,6 +79,7 @@ class _ComicsListState extends State<ComicsList> {
         children: _comicsList
             .map<Widget>((comic) => new ComicBrief(comic: comic))
             .toList(),
+        controller: _scrollController,
       ),
       floatingActionButton: RaisedButton(
         onPressed: () => fetchMoreComics(5, _numberOfComicsDisplayed)
@@ -78,22 +96,27 @@ class _ComicsListState extends State<ComicsList> {
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     List<dynamic> comicsList = new List<dynamic>();
+    if (!_fetching) {
+      _fetching = true;
 
-    if (numberToFetch > _numberOfComicsAvailable - _numberOfComicsDisplayed)
-      numberToFetch = _numberOfComicsAvailable - _numberOfComicsDisplayed;
+      if (numberToFetch > _numberOfComicsAvailable - _numberOfComicsDisplayed)
+        numberToFetch = _numberOfComicsAvailable - _numberOfComicsDisplayed;
 
-    String url =
-        '$_collectionURI?limit=$numberToFetch&offset=$numberToSkip&apikey=$publicKey&hash=$hash&ts=$timeStamp';
-    try {
-      final response = await http.get(
-        Uri.encodeFull(url),
-        headers: {"Accept": "application/json"},
-      );
+      String url =
+          '$_collectionURI?limit=$numberToFetch&offset=$numberToSkip&apikey=$publicKey&hash=$hash&ts=$timeStamp';
+      try {
+        final response = await http.get(
+          Uri.encodeFull(url),
+          headers: {"Accept": "application/json"},
+        );
 
-      final responseMap = json.decode(response.body);
-      comicsList = (responseMap["data"]["results"] as List<dynamic>);
-    } catch (e) {
-      print("$e");
+        final responseMap = json.decode(response.body);
+        comicsList = (responseMap["data"]["results"] as List<dynamic>);
+      } catch (e) {
+        print("$e");
+      } finally {
+        _fetching = false;
+      }
     }
     return comicsList;
   }
