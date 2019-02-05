@@ -1,2 +1,2 @@
-final String publicKey = "544c4bd372b1cfe780b82adb9240affe";
-final String privateKey = "0b775e66cd31a25f1d0a1953cb992e9f9f219380";
+final String publicKey = "YOUR_PUBLIC_KEY_HERE";
+final String privateKey = "YOUR_PRIVATE_KEY_HERE";
