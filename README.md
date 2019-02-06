@@ -15,7 +15,7 @@ This is a lot easier than it sounds. Just give it a try. You'll do great.
 3. After you register, follow the prompts to get an API developer key
 
 # To compile and run
-1. cd to this directory
+1. cd app
 2. flutter run
-(Or you can run it through your IDE)
+(Or you can run/debug it through your IDE)
 

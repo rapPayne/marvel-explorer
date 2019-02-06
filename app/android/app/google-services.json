@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "923336634074",
+    "firebase_url": "https://marvel-explorer.firebaseio.com",
+    "project_id": "marvel-explorer",
+    "storage_bucket": "marvel-explorer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923336634074:android:d9eca76ac0c56e85",
+        "android_client_info": {
+          "package_name": "com.agileGadgets.marvelExplorer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "923336634074-lprf3fmedd8ddnt2f0odou7mr3c60mn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCce_WhnSGiDIdgxz0rBySqVzAEHzT6V2U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
