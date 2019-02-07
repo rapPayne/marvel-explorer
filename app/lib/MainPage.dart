@@ -5,6 +5,6 @@ import 'CharacterQuery.dart';
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return   CharacterQuery();
+    return CharacterQuery();
   }
 }

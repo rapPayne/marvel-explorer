@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'dart:convert';
 import 'CharacterList.dart';
 import 'globalConstants.dart';
 import 'utilities.dart';
 
 class CharacterQuery extends StatefulWidget {
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
+  CharacterQuery({this.analytics, this.observer});
   @override
   _CharacterQueryState createState() => _CharacterQueryState();
 }
@@ -13,7 +18,9 @@ class CharacterQuery extends StatefulWidget {
 class _CharacterQueryState extends State<CharacterQuery> {
   List<dynamic> characters = List();
   final characterNameController = new TextEditingController();
-
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
+  _CharacterQueryState({this.analytics, this.observer});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

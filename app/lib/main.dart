@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'MainPage.dart';
 import 'CharacterQuery.dart';
 import 'CharacterList.dart';
@@ -7,11 +9,20 @@ import 'ComicsList.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
+
+  MyApp() {
+    analytics.logAppOpen();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       // TODO: RAP - These routes are not being used properly. Refactor later.
       initialRoute: "MainPage",
+      navigatorObservers: <NavigatorObserver>[observer],
       routes: <String, WidgetBuilder>{
         "CharacterQuery": (BuildContext context) => CharacterQuery(),
         "CharacterList": (BuildContext context) => CharacterList(),
@@ -22,12 +33,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(),
+      home: CharacterQuery(),
     );
   }
 }
-
-
 
 // The stuff below loads a scene to test Firebase Analytics. Delete it
 // after we've proven that Analytics works.
@@ -358,7 +367,6 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-
 
 // class TabsPage extends StatefulWidget {
 //   TabsPage(this.observer);
