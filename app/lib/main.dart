@@ -5,6 +5,7 @@ import 'MainPage.dart';
 import 'CharacterQuery.dart';
 import 'CharacterList.dart';
 import 'ComicsList.dart';
+import 'Login.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         "CharacterQuery": (BuildContext context) => CharacterQuery(),
         "CharacterList": (BuildContext context) => CharacterList(),
         "ComicsList": (BuildContext context) => ComicsList(),
+        "Login": (BuildContext context) => Login(),
         "MainPage": (BuildContext context) => MainPage(),
       },
       title: 'Marvel Comics Lookup',
