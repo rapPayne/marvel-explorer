@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
-import 'ComicsList.dart';
 
-class CharacterDetail extends StatelessWidget {
-  final dynamic character;
-  CharacterDetail({this.character});
+class ComicDetail extends StatefulWidget {
+  final comic;
 
+  ComicDetail({this.comic});
+
+  _ComicDetailState createState() => new _ComicDetailState(comic);
+}
+
+class _ComicDetailState extends State<ComicDetail> {
+  final comic;
+  _ComicDetailState(this.comic) {
+    print(comic);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(character['name']),
+        title: Text(comic['title']),
       ),
       body: Stack(children: <Widget>[
         Image.network(
-          "${character['thumbnail']['path']}/portrait_fantastic.${character['thumbnail']['extension']}",
+          "${comic['thumbnail']['path']}/portrait_fantastic.${comic['thumbnail']['extension']}",
           height: MediaQuery.of(context).size.height,
           fit: BoxFit.cover,
         ),
         Column(
           children: <Widget>[
-            Text(character['name'],
+            Text(comic['title'],
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,
@@ -38,7 +46,7 @@ class CharacterDetail extends StatelessWidget {
                 ),
               ),
               child: Column(children: <Widget>[
-                Text(character['description'],
+                Text(comic['description'],
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,
@@ -48,10 +56,10 @@ class CharacterDetail extends StatelessWidget {
                         alignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                       FlatButton(
-                        child: Text('COMICS'),
-                        onPressed: character["comics"] == 0
+                        child: Text('CHARACTERS'),
+                        onPressed: comic["characters"] == 0
                             ? null
-                            : () => goToComics(character["comics"], context),
+                            : () => goToCharacterList(comic["characters"], context),
                       ),
                       FlatButton(
                         child: Text('SERIES'),
@@ -72,19 +80,9 @@ class CharacterDetail extends StatelessWidget {
         ),
       ]),
     );
-      // Text(character['modified']),
-      // Text(character['resourceURI']),
-      // Text(character['urls']),
-    //);
   }
 
-  goToComics(dynamic comics, BuildContext context) {
-    if (comics["available"] == 0) return;
-
-    Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => ComicsList(
-                comicsResponse: comics, reasonForList: character["name"])));
+  void goToCharacterList(characterList, BuildContext context) {
+    print("Go to characterList");
   }
 }
