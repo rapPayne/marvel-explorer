@@ -17,10 +17,12 @@ class CharacterQuery extends StatefulWidget {
 
 class _CharacterQueryState extends State<CharacterQuery> {
   List<dynamic> characters = List();
-  final characterNameController = new TextEditingController();
+  var _characterNameController = new TextEditingController();
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
-  _CharacterQueryState({this.analytics, this.observer});
+  _CharacterQueryState({this.analytics, this.observer}) {
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,11 +42,9 @@ class _CharacterQueryState extends State<CharacterQuery> {
                       style: TextStyle(fontSize: 25),
                     ),
                     TextField(
-                      controller: characterNameController,
-                      onEditingComplete: () {
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                        fetchCharacterInfo(characterNameController.text);
-                      },
+                      controller: _characterNameController,
+                      //TODO: Debounce this onChange
+                      onChanged: fetchCharacterInfo,
                     ),
                   ]),
             ),
@@ -53,18 +53,19 @@ class _CharacterQueryState extends State<CharacterQuery> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => fetchCharacterInfo(this.characterNameController.text),
+        onPressed: () => fetchCharacterInfo(_characterNameController.text),
         tooltip: 'Get a hero',
         child: Icon(Icons.chevron_right),
       ),
     );
   }
 
+  //TODO: Cancel the prior requests if we start a new one
   void fetchCharacterInfo(characterName) {
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url =
-        'https://gateway.marvel.com/v1/public/characters?nameStartsWith=$characterName&apikey=$publicKey&hash=$hash&ts=$timeStamp';
+        'https://gateway.marvel.com/v1/public/characters?nameStartsWith=$characterName&limit=10&apikey=$publicKey&hash=$hash&ts=$timeStamp';
 
     http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
         (response) {
