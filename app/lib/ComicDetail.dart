@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Characters.dart';
 
 class ComicDetail extends StatefulWidget {
   final comic;
@@ -59,7 +60,7 @@ class _ComicDetailState extends State<ComicDetail> {
                         child: Text('CHARACTERS'),
                         onPressed: comic["characters"] == 0
                             ? null
-                            : () => goToCharacterList(comic["characters"], context),
+                            : () => goToCharacterList(comic["characters"], comic['title'], context),
                       ),
                       FlatButton(
                         child: Text('SERIES'),
@@ -73,7 +74,8 @@ class _ComicDetailState extends State<ComicDetail> {
                         child: Text('EVENTS'),
                         onPressed: () => print('foo'),
                       ),
-                    ])),
+                    ]),
+                    ),
               ]),
             ),
           ],
@@ -82,7 +84,16 @@ class _ComicDetailState extends State<ComicDetail> {
     );
   }
 
-  void goToCharacterList(characterList, BuildContext context) {
+  void goToCharacterList(characterList, String comicTitle, BuildContext context) {
     print("Go to characterList");
+        if (characterList["available"] == 0) return;
+
+
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => Characters(characters: characterList["items"], reason:comicTitle)
+        )
+    );
   }
 }

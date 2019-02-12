@@ -1,9 +1,48 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'ComicsList.dart';
+import 'globalConstants.dart';
+import 'utilities.dart';
 
-class CharacterDetail extends StatelessWidget {
+class CharacterDetail extends StatefulWidget {
   final dynamic character;
   CharacterDetail({this.character});
+
+  @override
+  _CharacterDetailState createState() {
+    return _CharacterDetailState(character: character);
+  }
+}
+
+class _CharacterDetailState extends State<CharacterDetail> {
+  final dynamic character;
+  _CharacterDetailState({this.character}) {
+    _fetchCharacterByURI(this.character["resourceURI"]);
+  }
+
+  void _fetchCharacterByURI(String uri) async {
+    print(uri);
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    String hash = generateMd5('$timeStamp$privateKey$publicKey');
+    String url = '$uri?apikey=$publicKey&hash=$hash&ts=$timeStamp';
+
+    //TODO: Put errors in a snackbar
+    try {
+      dynamic response = await http
+          .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+      Map<String, dynamic> responseMap = json.decode(response.body);
+      Map<String, dynamic> data = responseMap["data"];
+      List<dynamic> character = data["results"];
+
+      this.setState(() {
+        character = character;
+      });
+    } catch (e) {
+      print("Marvel's server appears to be down. Try again later.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +111,9 @@ class CharacterDetail extends StatelessWidget {
         ),
       ]),
     );
-      // Text(character['modified']),
-      // Text(character['resourceURI']),
-      // Text(character['urls']),
+    // Text(character['modified']),
+    // Text(character['resourceURI']),
+    // Text(character['urls']),
     //);
   }
 
