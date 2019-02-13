@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
+import 'globalConstants.dart';
+import 'utilities.dart';
 import 'Characters.dart';
 
 class ComicDetail extends StatelessWidget {
@@ -77,13 +82,32 @@ class ComicDetail extends StatelessWidget {
   }
 
   void goToCharacterList(
-      characterList, String comicTitle, BuildContext context) {
+      characterList, String comicTitle, BuildContext context) async {
     if (characterList["available"] == 0) return;
+    List<dynamic> characters;
+
+    // Fetch the characters because you have just a *subset* of that data.
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    String hash = generateMd5('$timeStamp$privateKey$publicKey');
+    try {
+      String url =
+          '${characterList["collectionURI"]}?apikey=$publicKey&hash=$hash&ts=$timeStamp';
+
+      var response = await http
+          .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+
+      Map<String, dynamic> responseMap = json.decode(response.body);
+      Map<String, dynamic> data = responseMap["data"];
+      characters = data["results"];
+    } catch (e) {
+      // Put up a snackbar with a message to try again
+      print(e);
+    }
 
     Navigator.push(
         context,
         new MaterialPageRoute(
             builder: (context) => Characters(
-                characters: characterList["items"], reason: comicTitle)));
+                characters: characters, reason: comicTitle)));
   }
 }
