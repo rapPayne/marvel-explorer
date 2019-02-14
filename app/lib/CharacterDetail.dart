@@ -23,7 +23,6 @@ class _CharacterDetailState extends State<CharacterDetail> {
   }
 
   void _fetchCharacterByURI(String uri) async {
-    print(uri);
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url = '$uri?apikey=$publicKey&hash=$hash&ts=$timeStamp';
