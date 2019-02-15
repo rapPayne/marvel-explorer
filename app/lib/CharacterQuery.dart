@@ -63,12 +63,14 @@ class _CharacterQueryState extends State<CharacterQuery> {
   @override
   void initState() {
     super.initState();
-    _searchOnChange =
-      new BehaviorSubject<String>(onCancel: _cancelCallback);
-    _searchOnChange.debounce(Duration(milliseconds: 1500)).listen((searchString) {
+    _searchOnChange = new BehaviorSubject<String>(onCancel: _cancelCallback);
+    _searchOnChange
+        .debounce(Duration(milliseconds: 1500))
+        .listen((searchString) {
       fetchCharacterInfo(searchString);
     });
   }
+
   _cancelCallback() {
     print("Cancelling the callback");
   }
@@ -78,21 +80,20 @@ class _CharacterQueryState extends State<CharacterQuery> {
   }
 
   //TODO: Cancel the prior requests if we start a new one
-  void fetchCharacterInfo(characterName) {
+  void fetchCharacterInfo(characterName) async {
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url =
         'https://gateway.marvel.com/v1/public/characters?nameStartsWith=$characterName&limit=10&apikey=$publicKey&hash=$hash&ts=$timeStamp';
 
-    http.get(Uri.encodeFull(url), headers: {"Accept": "application/json"}).then(
-        (response) {
-      Map<String, dynamic> responseMap = json.decode(response.body);
-      Map<String, dynamic> data = responseMap["data"];
-      List<dynamic> characters = data["results"];
+    dynamic response = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+    Map<String, dynamic> responseMap = json.decode(response.body);
+    Map<String, dynamic> data = responseMap["data"];
+    List<dynamic> characters = data["results"];
 
-      this.setState(() {
-        this.characters = characters;
-      });
+    this.setState(() {
+      this.characters = characters;
     });
   }
 }
