@@ -17,13 +17,13 @@ class CharacterQuery extends StatefulWidget {
 }
 
 class _CharacterQueryState extends State<CharacterQuery> {
-  final BehaviorSubject _searchOnChange =
-      new BehaviorSubject<String>(); // Allows debounce on the textInput
+  BehaviorSubject _searchOnChange; // Allows debounce on the textInput
   List<dynamic> characters = List();
   var _characterNameController = new TextEditingController();
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
   _CharacterQueryState({this.analytics, this.observer}) {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,10 +63,16 @@ class _CharacterQueryState extends State<CharacterQuery> {
   @override
   void initState() {
     super.initState();
+    _searchOnChange =
+      new BehaviorSubject<String>(onCancel: _cancelCallback);
     _searchOnChange.debounce(Duration(milliseconds: 1500)).listen((searchString) {
       fetchCharacterInfo(searchString);
     });
   }
+  _cancelCallback() {
+    print("Cancelling the callback");
+  }
+
   void triggerSearch(String characterName) {
     _searchOnChange.add(characterName);
   }
