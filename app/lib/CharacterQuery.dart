@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:rxdart/rxdart.dart';
 import 'dart:convert';
 import 'CharacterList.dart';
 import 'globalConstants.dart';
@@ -16,13 +17,13 @@ class CharacterQuery extends StatefulWidget {
 }
 
 class _CharacterQueryState extends State<CharacterQuery> {
+  final BehaviorSubject _searchOnChange =
+      new BehaviorSubject<String>(); // Allows debounce on the textInput
   List<dynamic> characters = List();
   var _characterNameController = new TextEditingController();
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
-  _CharacterQueryState({this.analytics, this.observer}) {
-
-  }
+  _CharacterQueryState({this.analytics, this.observer}) {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +44,7 @@ class _CharacterQueryState extends State<CharacterQuery> {
                     ),
                     TextField(
                       controller: _characterNameController,
-                      //TODO: Debounce this onChange
-                      onChanged: fetchCharacterInfo,
+                      onChanged: triggerSearch,
                     ),
                   ]),
             ),
@@ -58,6 +58,17 @@ class _CharacterQueryState extends State<CharacterQuery> {
         child: Icon(Icons.chevron_right),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchOnChange.debounce(Duration(milliseconds: 1500)).listen((searchString) {
+      fetchCharacterInfo(searchString);
+    });
+  }
+  void triggerSearch(String characterName) {
+    _searchOnChange.add(characterName);
   }
 
   //TODO: Cancel the prior requests if we start a new one

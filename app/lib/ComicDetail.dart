@@ -177,12 +177,11 @@ class ComicDetail extends StatelessWidget {
   Widget getImages(comic, context) {
     List<Widget> allImages = new List<Widget>();
 
-    Widget coverShot = Image.network(
-      "${comic['thumbnail']['path']}/portrait_fantastic.${comic['thumbnail']['extension']}",
-      width: MediaQuery.of(context).size.width * 0.75,
-      fit: BoxFit.cover,
-    );
-
+    // Widget coverShot = Image.network(
+    //   "${comic['thumbnail']['path']}/portrait_fantastic.${comic['thumbnail']['extension']}",
+    //   width: MediaQuery.of(context).size.width * 0.75,
+    //   fit: BoxFit.cover,
+    // );
     //allImages.add(coverShot);
 
     //List<Widget> otherImages = new List<Widget>();
@@ -196,8 +195,6 @@ class ComicDetail extends StatelessWidget {
         ),
       ));
     });
-
-    //allImages.addAll(otherImages);
 
     Widget images = SingleChildScrollView(
       scrollDirection: Axis.horizontal,
