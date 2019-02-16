@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'globalConstants.dart';
+import 'AdmobAdvertisements.dart';
 import 'MainPage.dart';
 import 'CharacterQuery.dart';
 import 'CharacterList.dart';
@@ -16,6 +19,17 @@ class MyApp extends StatelessWidget {
 
   MyApp() {
     analytics.logAppOpen();
+    FirebaseAdMob.instance.initialize(appId: androidAdmobAppId);
+    myBanner
+  // typically this happens well before the ad is shown
+  ..load()
+  ..show(
+    // Positions the banner ad 60 pixels from the bottom of the screen
+    anchorOffset: 60.0,
+    // Banner Position
+    anchorType: AnchorType.bottom,
+  );
+  print("got here");
   }
 
   @override
