@@ -5,6 +5,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:convert';
 import 'CharacterList.dart';
+import 'LoadingDialog.dart';
 import 'globalConstants.dart';
 import 'utilities.dart';
 
@@ -26,6 +27,13 @@ class _CharacterQueryState extends State<CharacterQuery> {
 
   @override
   Widget build(BuildContext context) {
+    // The rxDart listener for debouncing the user input. Put here because we needed access to 'context'
+    _searchOnChange = new BehaviorSubject<String>(onCancel: _cancelCallback);
+    _searchOnChange
+        .debounce(Duration(milliseconds: 1500))
+        .listen((searchString) {
+      fetchCharacterInfo(characterName: searchString, context: context);
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Marvel Comics lookup'),
@@ -52,23 +60,12 @@ class _CharacterQueryState extends State<CharacterQuery> {
           Expanded(child: CharacterList(characters: this.characters))
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => fetchCharacterInfo(_characterNameController.text),
-        tooltip: 'Get a hero',
-        child: Icon(Icons.chevron_right),
-      ),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _searchOnChange = new BehaviorSubject<String>(onCancel: _cancelCallback);
-    _searchOnChange
-        .debounce(Duration(milliseconds: 1500))
-        .listen((searchString) {
-      fetchCharacterInfo(searchString);
-    });
   }
 
   _cancelCallback() {
@@ -80,20 +77,32 @@ class _CharacterQueryState extends State<CharacterQuery> {
   }
 
   //TODO: Cancel the prior requests if we start a new one
-  void fetchCharacterInfo(characterName) async {
+  void fetchCharacterInfo({@required characterName, @required context}) async {
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
     String url =
         'https://gateway.marvel.com/v1/public/characters?nameStartsWith=$characterName&limit=10&apikey=$publicKey&hash=$hash&ts=$timeStamp';
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => LoadingDialog(),
+      );
+      dynamic response = await http
+          .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+      Map<String, dynamic> responseMap = json.decode(response.body);
+      Map<String, dynamic> data = responseMap["data"];
+      if (data == null) return;
+      List<dynamic> characters = data["results"];
 
-    dynamic response = await http
-        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
-    Map<String, dynamic> responseMap = json.decode(response.body);
-    Map<String, dynamic> data = responseMap["data"];
-    List<dynamic> characters = data["results"];
-
-    this.setState(() {
-      this.characters = characters;
-    });
+      this.setState(() {
+        this.characters = characters;
+      });
+    } catch (e) {
+      //TODO: Throw up a snackbar error or something
+      print(e);
+    } finally {
+      Navigator.of(context).pop();
+    }
   }
 }
