@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 
-class LoadingDialog extends StatefulWidget {
-  LoadingDialogState state;
-
-  bool isShowing() {
-    return state != null && state.mounted;
-  }
-
-  @override
-  createState() => state = LoadingDialogState();
-}
-
-class LoadingDialogState extends State<LoadingDialog> {
+class LoadingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(

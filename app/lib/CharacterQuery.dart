@@ -23,7 +23,7 @@ class _CharacterQueryState extends State<CharacterQuery> {
   var _characterNameController = new TextEditingController();
   final FirebaseAnalytics analytics;
   final FirebaseAnalyticsObserver observer;
-  _CharacterQueryState({this.analytics, this.observer}) {}
+  _CharacterQueryState({this.analytics, this.observer});
 
   @override
   Widget build(BuildContext context) {
