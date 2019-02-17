@@ -18,6 +18,8 @@ class CharacterQuery extends StatefulWidget {
 }
 
 class _CharacterQueryState extends State<CharacterQuery> {
+  // So we can grab a reference to the scaffold for the snackbar
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   BehaviorSubject _searchOnChange; // Allows debounce on the textInput
   List<dynamic> characters = List();
   var _characterNameController = new TextEditingController();
@@ -35,6 +37,7 @@ class _CharacterQueryState extends State<CharacterQuery> {
       fetchCharacterInfo(characterName: searchString, context: context);
     });
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Marvel Comics lookup'),
       ),
@@ -76,7 +79,6 @@ class _CharacterQueryState extends State<CharacterQuery> {
     _searchOnChange.add(characterName);
   }
 
-  //TODO: Cancel the prior requests if we start a new one
   void fetchCharacterInfo({@required characterName, @required context}) async {
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     String hash = generateMd5('$timeStamp$privateKey$publicKey');
@@ -92,15 +94,20 @@ class _CharacterQueryState extends State<CharacterQuery> {
           .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
       Map<String, dynamic> responseMap = json.decode(response.body);
       Map<String, dynamic> data = responseMap["data"];
-      if (data == null) return;
+      if (data == null) {
+        _scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text("No characters by that name. Try again.")));
+        return;
+      }
       List<dynamic> characters = data["results"];
 
       this.setState(() {
         this.characters = characters;
       });
     } catch (e) {
-      //TODO: Throw up a snackbar error or something
-      print(e);
+      print("Error: " + e.toString());
+      SnackBar snackBar = new SnackBar(content: Text("Error: " + e.toString()));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
     } finally {
       Navigator.of(context).pop();
     }
