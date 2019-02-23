@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'globalConstants.dart';
+import 'sensitiveConstants.dart';
 import 'AdmobAdvertisements.dart';
 import 'MainPage.dart';
 import 'CharacterQuery.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   MyApp() {
     analytics.logAppOpen();
-    FirebaseAdMob.instance.initialize(appId: androidAdmobAppId);
+    FirebaseAdMob.instance.initialize(appId: adMobAppId);
     myBanner
   // typically this happens well before the ad is shown
   ..load()

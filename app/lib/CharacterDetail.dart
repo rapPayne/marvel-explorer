@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'ComicsList.dart';
-import 'globalConstants.dart';
+import 'sensitiveConstants.dart';
 import 'utilities.dart';
 
 class CharacterDetail extends StatefulWidget {
