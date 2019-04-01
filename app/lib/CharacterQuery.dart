@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'dart:convert';
 import 'CharacterList.dart';
 import 'LoadingDialog.dart';
-import 'globalConstants.dart';
+import 'sensitiveConstants.dart';
 import 'utilities.dart';
 
 class CharacterQuery extends StatefulWidget {

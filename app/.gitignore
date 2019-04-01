@@ -4,11 +4,24 @@
 *.log
 *.pyc
 *.swp
-.DS_Store
+../*.DS_Store
 .atom/
 .buildlog/
 .history
 .svn/
+
+# sensitive constants
+android/app/google-services.json
+android/GoogleService-Info.plist
+ios/GoogleService-Info.plist
+lib/sensitiveConstants.dart
+ios/SensitiveConstants.h
+ios/SensitiveConstants.m
+
+# Android Studio related
+# Local configuration file (sdk path, etc)
+local.properties
+
 
 # IntelliJ related
 *.iml

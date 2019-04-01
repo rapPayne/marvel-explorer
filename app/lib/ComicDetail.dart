@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'globalConstants.dart';
+import 'sensitiveConstants.dart';
 import 'utilities.dart';
 import 'Characters.dart';
 import 'CharacterDetail.dart';
